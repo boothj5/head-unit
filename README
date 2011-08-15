@@ -7,6 +7,10 @@ and it seemed like a fun idea to write my own.
 
 It's super simple:
 
+To clean:
+
+    make clean
+
 To build:
 
     make
