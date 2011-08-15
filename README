@@ -1,0 +1,65 @@
+A simple C Unit testing framework
+---------------------------------
+
+Written whilst implementing shithead in C as I wanted more than a simple
+main method test harness, but less than what most current frameworks offer, 
+and it seemed like a fun idea to write my own.
+
+It's super simple:
+
+To build:
+
+    make
+
+To install (currently to ~/lib and ~/include):
+
+    make install
+
+To use:
+
+Add the following to your test module:
+
+    #include <head-unit.h>
+    #define NUM_TESTS 5
+
+Set NUM_TESTS to however many tests there are.
+
+To write some tests:
+
+    void some_test(void)
+    {
+        ... some code ...
+
+        assert_true( ... some expression ... ) ;
+    }
+
+    void some_other_test(void)
+    {
+        ... some code ...
+
+        assert_true( ... some expression ... ) ;
+    }
+
+Then at the bottom of the test module:
+
+    static Test tests[NUM_TESTS]  =
+        { { some_test, "some_test" } ,
+          { some_other_test, "some_other_test" } } ;
+
+    int main(void)
+    {
+        run_tests(tests, NUM_TESTS) ;
+        return 0 ;
+    }
+   
+The output will be something like:
+
+    HEAD-UNIT
+    Running tests...
+    -> some_test... SUCCESS
+    -> some_other_test... FAILURE
+
+    Passed tests: 1
+    Failed tests: 1
+    FAILURE
+
