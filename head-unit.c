@@ -2,9 +2,9 @@
 #include <string.h>
 #include "head-unit.h"
 
-int last_result = 0 ;
-int passed = 0 ;
-int failed = 0 ;
+static int last_result = 0 ;
+static int passed = 0 ;
+static int failed = 0 ;
 
 Test make_test(void (*test)(void), char *name)
 {
