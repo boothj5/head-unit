@@ -5,23 +5,26 @@
 static int last_result = 0 ;
 static int passed = 0 ;
 static int failed = 0 ;
+static int num_tests = 0 ;
+static Test tests[MAX_TESTS] ;
 
-Test make_test(void (*test)(void), char *name)
+void add_test(void (*test)(void), char *name)
 {
     Test new_test ;
     new_test.test = test ;
     strcpy(new_test.name, name) ;
-    return new_test ;
+
+    tests[num_tests++] = new_test ;
 }
 
-void run_tests(Test *tests, int ntests)
+void run_tests()
 {
     int i ;
 
     printf("HEAD-UNIT\n") ;
     printf("Running tests...\n") ;
 
-    for (i = 0 ; i < ntests ; i++) {
+    for (i = 0 ; i < num_tests ; i++) {
         printf("-> %s... ", tests[i].name) ;
         (*tests[i].test)() ;
         if (last_result)
