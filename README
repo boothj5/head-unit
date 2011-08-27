@@ -5,7 +5,8 @@ Written whilst implementing shithead in C as I wanted more than a simple
 main method test harness, but less than what most current frameworks offer, 
 and it seemed like a fun idea to write my own.
 
-It's super simple:
+Instructions for building this project:
+---------------------------------------
 
 To clean:
 
@@ -19,16 +20,16 @@ To install (currently to ~/lib and ~/include):
 
     make install
 
-To use:
+Instruction for using head-unit:
+--------------------------------
 
-Add the following to your test module:
+1) Create a test module:  
+
+Add the following:
 
     #include <head-unit.h>
-    #define NUM_TESTS 5
 
-Set NUM_TESTS to however many tests there are.
-
-To write some tests:
+Write some tests in it:
 
     void some_test(void)
     {
@@ -44,26 +45,72 @@ To write some tests:
         assert_true( ... some expression ... ) ;
     }
 
-Then at the bottom of the test module:
+Create a function to register this module:
 
-    static Test tests[NUM_TESTS]  =
-        { { some_test, "some_test" } ,
-          { some_other_test, "some_other_test" } } ;
+    void test_something()
+    {
+        add_suit("test_something") ;
+        add_test(some_test, "some_test") ;
+        add_test(some_other_test, "some_other_test") ;
+    }
+
+2) Create a file to run all modules:
+
+(e.g. testsuite.c):
+
+    #include <head-unit.h>
 
     int main(void)
     {
-        run_tests(tests, NUM_TESTS) ;
+        test_something() ;
+        test_someotherstuff) ;
+        run_tests() ;
         return 0 ;
     }
-   
-The output will be something like:
 
+3) Builing your tests:
+
+To build your suite, you must build the file with the main() function,
+plus all the test files, plus any files they depend on.  As an example,
+for my player and card tests (using make):
+
+    make-tests: testsuite.o test_card.o test_player.o card.o player.o
+        $(CC) testsuite.o test_card.o test_player.o card.o player.o -I ~/include -L ~/lib -o testsuite -l headunit
+
+    test: make-tests
+        ./testsuite
+
+Example output:
+
+    ---------
     HEAD-UNIT
-    Running tests...
-    -> some_test... SUCCESS
-    -> some_other_test... FAILURE
+    ---------
 
-    Passed tests: 1
-    Failed tests: 1
-    FAILURE
+    -> Running tests for suite 'test_card'...
+       --> test_three_lowest_when_last... SUCCESS
+       --> test_three_lowest_when_middle... FAILED
+       --> test_three_lowest_when_first... SUCCESS
+       --> test_lowest_one_card... FAILED
+       --> test_three_lower_than_two... SUCCESS
+       --> test_five_lower_than_two... SUCCESS
+       --> test_jack_lower_than_seven... SUCCESS
+       --> test_two_special... SUCCESS
+       --> test_seven_special... SUCCESS
+       --> test_ten_special... SUCCESS
+
+    -> Running tests for suite 'test_player'...
+       --> test_lowest_card_by_player... FAILED
+       --> swap_first_two_cards... SUCCESS
+
+    9 tests passed
+    3 tests failed
+
+    FAILURE SUMMARY
+    ---------------
+    -> test_card (2/10)
+       --> test_three_lowest_when_middle... FAILED
+       --> test_lowest_one_card... FAILED
+
+    -> test_player (1/2)
+       --> test_lowest_card_by_player... FAILED
 
