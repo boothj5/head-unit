@@ -2,38 +2,57 @@
 #include <string.h>
 #include "head-unit.h"
 
-static char suite_name[MAX_TEST_NAME_LEN] ;
+#define MAX_TEST_NAME_LEN 50
+#define MAX_TESTS 100
+#define MAX_SUITES 100
+
+struct test_t {
+    void (*test)(void) ;
+    char name[MAX_TEST_NAME_LEN] ;
+} ;
+
+struct suite_t {
+    char name[MAX_TEST_NAME_LEN] ;
+    struct test_t tests[MAX_TESTS] ;
+    int num_tests ;
+} ;
+
+static struct suite_t suites[MAX_SUITES] ; 
+static int num_suites = 0 ;
 static int assert_fail = 0 ;
 static int total_passed = 0 ;
 static int total_failed = 0 ;
-static int num_tests = 0 ;
-static Test tests[MAX_TESTS] ;
 
 void add_suite(char *name)
 {
-    strcpy(suite_name, name) ;
+    struct suite_t new_suite ;
+    new_suite.num_tests = 0 ;
+    strcpy(new_suite.name, name) ;
+    suites[num_suites++] = new_suite ;
 }
 
 void add_test(void (*test)(void), char *name)
 {
-    Test new_test ;
+    struct test_t new_test ;
+    struct suite_t *current_suite = &suites[num_suites-1] ;
+
     new_test.test = test ;
     strcpy(new_test.name, name) ;
-
-    tests[num_tests++] = new_test ;
+    current_suite->tests[current_suite->num_tests++] = new_test ;
 }
 
 void run_tests()
 {
     int i ;
+    struct suite_t suite = suites[0] ;
 
     printf("HEAD-UNIT\n") ;
-    printf("Running tests for suite '%s'...\n", suite_name) ;
+    printf("Running tests for suite '%s'...\n", suite.name) ;
 
-    for (i = 0 ; i < num_tests ; i++) {
+    for (i = 0 ; i < suite.num_tests ; i++) {
         assert_fail = 0 ;
-        printf("-> %s... ", tests[i].name) ;
-        (*tests[i].test)() ;
+        printf("-> %s... ", suite.tests[i].name) ;
+        (*suite.tests[i].test)() ;
         if (assert_fail) {
             total_failed++ ;
             printf("FAILED\n") ;
