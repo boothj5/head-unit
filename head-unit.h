@@ -9,6 +9,7 @@ typedef struct {
     char name[MAX_TEST_NAME_LEN] ;
 } Test ;
 
+void add_suite(char *name) ;
 void add_test(void (*test)(void), char *name) ;
 void assert_true(int expression) ;
 void run_tests(void) ;

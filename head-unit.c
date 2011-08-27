@@ -2,11 +2,17 @@
 #include <string.h>
 #include "head-unit.h"
 
+static char suite_name[MAX_TEST_NAME_LEN] ;
 static int assert_fail = 0 ;
 static int total_passed = 0 ;
 static int total_failed = 0 ;
 static int num_tests = 0 ;
 static Test tests[MAX_TESTS] ;
+
+void add_suite(char *name)
+{
+    strcpy(suite_name, name) ;
+}
 
 void add_test(void (*test)(void), char *name)
 {
@@ -22,7 +28,7 @@ void run_tests()
     int i ;
 
     printf("HEAD-UNIT\n") ;
-    printf("Running tests...\n") ;
+    printf("Running tests for suite '%s'...\n", suite_name) ;
 
     for (i = 0 ; i < num_tests ; i++) {
         assert_fail = 0 ;
