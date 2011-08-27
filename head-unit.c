@@ -2,9 +2,9 @@
 #include <string.h>
 #include "head-unit.h"
 
-static int last_result = 0 ;
-static int passed = 0 ;
-static int failed = 0 ;
+static int assert_fail = 0 ;
+static int total_passed = 0 ;
+static int total_failed = 0 ;
 static int num_tests = 0 ;
 static Test tests[MAX_TESTS] ;
 
@@ -25,34 +25,33 @@ void run_tests()
     printf("Running tests...\n") ;
 
     for (i = 0 ; i < num_tests ; i++) {
+        assert_fail = 0 ;
         printf("-> %s... ", tests[i].name) ;
         (*tests[i].test)() ;
-        if (last_result)
-            passed++ ;
-        else
-            failed++ ;
+        if (assert_fail) {
+            total_failed++ ;
+            printf("FAILED\n") ;
+        }
+        else {
+            total_passed++ ;
+            printf("SUCCESS\n") ;
+        }
     }
     
-    printf("\nPassed tests: %d\n", passed) ;
-    if (failed) {
-        printf("Failed tests: %d\n", failed) ;
-        printf("FAILURE\n") ;
+    printf("\nPassed tests: %d\n", total_passed) ;
+    if (total_failed) {
+        printf("Failed tests: %d\n", total_failed) ;
+        printf("FAILURE\n\n") ;
     }
     else {
-        printf("SUCCESS\n") ;
+        printf("SUCCESS\n\n") ;
     }
 }
 
 void assert_true(int expression)
 {
-    if (expression) {
-        printf("SUCCESS\n") ;
-        last_result = 1 ;
-    }
-    else { 
-        printf("FAILURE\n") ;
-        last_result = 0 ;
-    }
+    if (!expression) 
+        assert_fail = 1 ;
 }
 
 
