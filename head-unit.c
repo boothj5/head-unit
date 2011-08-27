@@ -43,24 +43,31 @@ void add_test(void (*test)(void), char *name)
 
 void run_tests()
 {
-    int i ;
-    struct suite_t suite = suites[0] ;
+    int i, j ;
+    struct suite_t suite ;
 
+    printf("\n---------\n") ;
     printf("HEAD-UNIT\n") ;
-    printf("Running tests for suite '%s'...\n", suite.name) ;
+    printf("---------\n\n") ;
 
-    for (i = 0 ; i < suite.num_tests ; i++) {
-        assert_fail = 0 ;
-        printf("-> %s... ", suite.tests[i].name) ;
-        (*suite.tests[i].test)() ;
-        if (assert_fail) {
-            total_failed++ ;
-            printf("FAILED\n") ;
+    for (i = 0 ; i < num_suites ; i++) {
+        suite = suites[i] ;
+        printf("-> Running tests for suite '%s'...\n", suite.name) ;
+
+        for (j = 0 ; j < suite.num_tests ; j++) {
+            assert_fail = 0 ;
+            printf("   --> %s... ", suite.tests[j].name) ;
+            (*suite.tests[j].test)() ;
+            if (assert_fail) {
+                total_failed++ ;
+                printf("FAILED\n") ;
+            }
+            else {
+                total_passed++ ;
+                printf("SUCCESS\n") ;
+            }
         }
-        else {
-            total_passed++ ;
-            printf("SUCCESS\n") ;
-        }
+        printf("\n") ;
     }
     
     printf("\nPassed tests: %d\n", total_passed) ;
