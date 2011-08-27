@@ -26,6 +26,7 @@ static int total_passed = 0 ;
 static int total_failed = 0 ;
 
 static void run_suite(struct suite_t *suite) ;
+static void failure_summary(struct suite_t *suite) ;
 
 void add_suite(char *name)
 {
@@ -48,17 +49,21 @@ void add_test(void (*test)(void), char *name)
 
 void run_tests()
 {
-    int i, j ;
+    int i ;
     struct suite_t *suite ;
 
     printf("\n---------\n") ;
     printf("HEAD-UNIT\n") ;
     printf("---------\n\n") ;
 
-    for (i = 0 ; i < num_suites ; i++)
+    for (i = 0 ; i < num_suites ; i++) {
         run_suite(&suites[i]) ;
+        if (i != num_suites-1)
+            printf("\n") ;
+    }
     
     printf("\n%d tests passed\n", total_passed) ;
+
     if (total_failed) {
         printf("%d tests failed\n", total_failed) ;
         printf("\n") ;
@@ -66,53 +71,51 @@ void run_tests()
         printf("FAILURE SUMMARY\n") ;
         printf("---------------\n") ;
 
-        for (i = 0 ; i < num_suites ; i++) {
-            if (suites[i].num_failed) {
-                suite = &suites[i] ;
-                printf("-> %s (%d/%d)\n", suite->name, suite->num_failed, suite->num_tests) ;
-                for (j = 0 ; j < suite->num_failed ; j++) {
-                    printf("   --> %s... FAILED\n", suite->tests[suite->failed_tests[j]].name) ;
-                    if (j == suite->num_failed -1 )
-                        printf("\n") ;
-                }
-            }
-        }
+        for (i = 0 ; i < num_suites ; i++) 
+            if (suites[i].num_failed)
+                failure_summary(&suites[i]) ;
     }
     else {
         printf("SUCCESS\n\n") ;
     }
 }
 
+static void failure_summary(struct suite_t *suite)
+{
+    int i ;
+    printf("-> %s (%d/%d)\n", suite->name, suite->num_failed, suite->num_tests) ;
+    
+    for (i = 0 ; i < suite->num_failed ; i++) {
+        printf("   --> %s... FAILED\n", suite->tests[suite->failed_tests[i]].name) ;
+        if (i == suite->num_failed -1 )
+            printf("\n") ;
+    }
+}
+
 static void run_suite(struct suite_t *suite)
 {
-    int i, j ;
+    int i ;
     printf("-> Running tests for suite '%s'...\n", suite->name) ;
 
-    for (j = 0 ; j < suite->num_tests ; j++) {
+    for (i = 0 ; i < suite->num_tests ; i++) {
         assert_fail = 0 ;
-        printf("   --> %s... ", suite->tests[j].name) ;
-        (*suite->tests[j].test)() ;
+        printf("   --> %s... ", suite->tests[i].name) ;
+        (*suite->tests[i].test)() ;
         if (assert_fail) {
             total_failed++ ;
             printf("FAILED\n") ;
-            suite->failed_tests[suite->num_failed++] = j ;
+            suite->failed_tests[suite->num_failed++] = i ;
         }
         else {
             total_passed++ ;
             printf("SUCCESS\n") ;
         }
     }
-    if (i != num_suites-1)
-        printf("\n") ;
 }
-
-
-
 
 void assert_true(int expression)
 {
-    if (!expression) 
-        assert_fail = 1 ;
+    assert_fail = !expression ; 
 }
 
 
