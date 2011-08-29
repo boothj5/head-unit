@@ -1,5 +1,5 @@
 CC=gcc
-CCARGS = -Werror -Wall -Wextra
+CCARGS =-Werror -Wall -Wextra
 
 make-headunit: 
 	$(CC) $(CCARGS) -o libheadunit.a -c head-unit.c
