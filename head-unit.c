@@ -50,7 +50,6 @@ void add_test(void (*test)(void), char *name)
 void run_tests()
 {
     int i ;
-    struct suite_t *suite ;
 
     printf("\n---------\n") ;
     printf("HEAD-UNIT\n") ;
