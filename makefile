@@ -1,10 +1,10 @@
 CC=gcc
 CFLAGS =-Werror -Wall -Wextra
 
-make-headunit: head-unit.o 
+compile: head-unit.o 
 	ar rcs libheadunit.a head-unit.o
 
-install: make-headunit
+install: compile
 	cp libheadunit.a ~/lib
 	cp head-unit.h ~/include
 
