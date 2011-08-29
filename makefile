@@ -1,7 +1,8 @@
 CC=gcc
+CCARGS = -Werror -Wall -Wextra
 
 make-headunit: 
-	$(CC) -Werror -Wall -Wextra -o libheadunit.a -c head-unit.c
+	$(CC) $(CCARGS) -o libheadunit.a -c head-unit.c
 
 install: make-headunit
 	cp libheadunit.a ~/lib
