@@ -1,7 +1,7 @@
 CC=gcc
 
 make-headunit: 
-	$(CC) -Wall -o libheadunit.a -c head-unit.c
+	$(CC) -Werror -Wall -Wextra -o libheadunit.a -c head-unit.c
 
 install: make-headunit
 	cp libheadunit.a ~/lib
