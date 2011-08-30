@@ -5,23 +5,30 @@
 #define MAX_TEST_NAME_LEN 50
 #define MAX_TESTS 100
 #define MAX_SUITES 100
+#define MAX_MSG_LEN 100
 
 struct test_t {
     void (*test)(void) ;
     char name[MAX_TEST_NAME_LEN] ;
 } ;
 
+struct failed_test_t {
+    int index ;
+    char message[MAX_MSG_LEN] ;
+} ;
+
 struct suite_t {
     char name[MAX_TEST_NAME_LEN] ;
     struct test_t tests[MAX_TESTS] ;
     int num_tests ;
-    int failed_tests[MAX_TESTS] ;
+    struct failed_test_t failed_tests[MAX_TESTS] ;
     int num_failed ;
 } ;
 
 static struct suite_t suites[MAX_SUITES] ; 
 static int num_suites = 0 ;
 static int assert_fail = 0 ;
+static char fail_message[MAX_MSG_LEN] ;
 static int total_passed = 0 ;
 static int total_failed = 0 ;
 
@@ -85,7 +92,9 @@ static void failure_summary(struct suite_t *suite)
     printf("-> %s (%d/%d)\n", suite->name, suite->num_failed, suite->num_tests) ;
     
     for (i = 0 ; i < suite->num_failed ; i++) {
-        printf("   --> %s... FAILED\n", suite->tests[suite->failed_tests[i]].name) ;
+        int test_num = suite->failed_tests[i].index ;
+        char *msg = suite->failed_tests[i].message ;
+        printf("   --> %s... FAILED (%s)\n", suite->tests[test_num].name, msg) ;
         if (i == suite->num_failed -1 )
             printf("\n") ;
     }
@@ -103,7 +112,10 @@ static void run_suite(struct suite_t *suite)
         if (assert_fail) {
             total_failed++ ;
             printf("FAILED\n") ;
-            suite->failed_tests[suite->num_failed++] = i ;
+            struct failed_test_t failed ;
+            failed.index = i ;
+            strcpy(failed.message, fail_message) ;
+            suite->failed_tests[suite->num_failed++] = failed ;
         }
         else {
             total_passed++ ;
@@ -115,6 +127,29 @@ static void run_suite(struct suite_t *suite)
 void assert_true(int expression)
 {
     assert_fail = !expression ; 
+    if (assert_fail)
+        strcpy(fail_message, "expected = true, actual = false") ;
 }
 
+void assert_false(int expression)
+{
+    assert_fail = expression ;
+    if (assert_fail)
+        strcpy(fail_message, "expected = false, actual = true") ;
+   
+}
 
+void assert_int_equals(int expected, int actual)
+{
+    char msg[MAX_MSG_LEN] ;
+    char buf[10] ;
+    assert_fail = expected != actual ;
+    if (assert_fail)
+        strcpy(msg, "expected = ") ;
+        sprintf(buf, "%d", expected) ;
+        strcat(msg, buf) ;
+        strcat(msg, ", actual = ") ;
+        sprintf(buf, "%d", actual) ;
+        strcat(msg, buf) ;
+        strcpy(fail_message, msg) ;
+}
