@@ -126,25 +126,35 @@ static void run_suite(struct suite_t *suite)
 
 void assert_true(int expression)
 {
-    assert_fail = !expression ; 
-    if (assert_fail)
+    int fail = 0 ;
+
+    fail = !expression ; 
+    if (fail) {
+        assert_fail = 1 ;
         strcpy(fail_message, "expected = true, actual = false") ;
+    }
 }
 
 void assert_false(int expression)
 {
-    assert_fail = expression ;
-    if (assert_fail)
+    int fail = 0 ;
+
+    fail = expression ;
+    if (fail) {
+        assert_fail = 1 ;
         strcpy(fail_message, "expected = false, actual = true") ;
-   
+    }
 }
 
 void assert_int_equals(int expected, int actual)
 {
+    int fail = 0 ;
     char msg[MAX_MSG_LEN] ;
     char buf[10] ;
-    assert_fail = expected != actual ;
-    if (assert_fail)
+
+    fail = expected != actual ;
+    if (fail) {
+        assert_fail = 1 ;
         strcpy(msg, "expected = ") ;
         sprintf(buf, "%d", expected) ;
         strcat(msg, buf) ;
@@ -152,4 +162,5 @@ void assert_int_equals(int expected, int actual)
         sprintf(buf, "%d", actual) ;
         strcat(msg, buf) ;
         strcpy(fail_message, msg) ;
+    }
 }
