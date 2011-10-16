@@ -5,7 +5,7 @@
 #define MAX_TEST_NAME_LEN 50
 #define MAX_TESTS 100
 #define MAX_SUITES 100
-#define MAX_MSG_LEN 100
+#define MAX_MSG_LEN 200
 
 struct test_t {
     void (*test)(void) ;
@@ -164,3 +164,20 @@ void assert_int_equals(int expected, int actual)
         strcpy(fail_message, msg) ;
     }
 }
+
+void assert_string_equals(char *expected, char *actual)
+{
+    int fail = 0 ;
+    char msg[MAX_MSG_LEN] ;
+
+    fail = strcmp(expected, actual) != 0 ;
+    if (fail) {
+        assert_fail = 1 ;
+        strcpy(msg, "expected = ") ;
+        strcat(msg, expected) ;
+        strcat(msg, ", actual = ") ;
+        strcat(msg, actual) ;
+        strcpy(fail_message, msg) ;
+    }
+}
+
