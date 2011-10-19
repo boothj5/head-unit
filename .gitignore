@@ -6,3 +6,6 @@
 # *~
 libheadunit.a
 *.o
+.cproject
+.project
+.settings/
