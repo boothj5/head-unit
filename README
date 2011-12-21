@@ -1,9 +1,7 @@
-A simple C Unit testing framework
----------------------------------
+A simple C/C++ Unit testing framework
+--------------------------------------
 
-Written whilst implementing shithead in C as I wanted more than a simple
-main method test harness, but less than what most current frameworks offer, 
-and it seemed like a fun idea to write my own.
+Written whilst implementing shithead in C.
 
 Instructions for building this project:
 ---------------------------------------
@@ -20,8 +18,11 @@ To install (currently to ~/lib and ~/include):
 
     make install
 
-Instruction for using head-unit:
---------------------------------
+Instructiona for using head-unit:
+---------------------------------
+
+Note: For C++ the only difference is including head-unit-cpp.h and
+the library libheadunitcpp.
 
 1) Create a test module:  
 
