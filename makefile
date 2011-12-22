@@ -1,10 +1,11 @@
-CC=g++
+CC=gcc
+CXX=g++
 CFLAGS=-Werror -Wall -Wextra
 CXXFLAGS=-Werror -Wall -Wextra
 
-compile: head-unit.o head-unit-cpp.o
-	ar rcs libheadunit.a head-unit.o
-	ar rcs libheadunitcpp.a head-unit-cpp.o
+compile: head-unit.o asserts.o head-unit-cpp.o asserts-cpp.o
+	ar rcs libheadunit.a head-unit.o asserts.o
+	ar rcs libheadunitcpp.a head-unit-cpp.o asserts-cpp.o
 
 install: compile
 	cp libheadunit.a ~/lib

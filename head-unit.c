@@ -5,7 +5,6 @@
 #define MAX_TEST_NAME_LEN 50
 #define MAX_TESTS 100
 #define MAX_SUITES 100
-#define MAX_MSG_LEN 200
 
 struct test_t {
     void (*test)(void) ;
@@ -27,10 +26,11 @@ struct suite_t {
 
 static struct suite_t suites[MAX_SUITES] ; 
 static int num_suites = 0 ;
-static int assert_fail = 0 ;
-static char fail_message[MAX_MSG_LEN] ;
 static int total_passed = 0 ;
 static int total_failed = 0 ;
+
+int assert_fail = 0 ;
+char fail_message[MAX_MSG_LEN] ;
 
 static void run_suite(struct suite_t *suite) ;
 static void failure_summary(struct suite_t *suite) ;
@@ -121,63 +121,6 @@ static void run_suite(struct suite_t *suite)
             total_passed++ ;
             printf("SUCCESS\n") ;
         }
-    }
-}
-
-void assert_true(int expression)
-{
-    int fail = 0 ;
-
-    fail = !expression ; 
-    if (fail) {
-        assert_fail = 1 ;
-        strcpy(fail_message, "expected = true, actual = false") ;
-    }
-}
-
-void assert_false(int expression)
-{
-    int fail = 0 ;
-
-    fail = expression ;
-    if (fail) {
-        assert_fail = 1 ;
-        strcpy(fail_message, "expected = false, actual = true") ;
-    }
-}
-
-void assert_int_equals(int expected, int actual)
-{
-    int fail = 0 ;
-    char msg[MAX_MSG_LEN] ;
-    char buf[10] ;
-
-    fail = expected != actual ;
-    if (fail) {
-        assert_fail = 1 ;
-        strcpy(msg, "expected = ") ;
-        sprintf(buf, "%d", expected) ;
-        strcat(msg, buf) ;
-        strcat(msg, ", actual = ") ;
-        sprintf(buf, "%d", actual) ;
-        strcat(msg, buf) ;
-        strcpy(fail_message, msg) ;
-    }
-}
-
-void assert_string_equals(char *expected, char *actual)
-{
-    int fail = 0 ;
-    char msg[MAX_MSG_LEN] ;
-
-    fail = strcmp(expected, actual) != 0 ;
-    if (fail) {
-        assert_fail = 1 ;
-        strcpy(msg, "expected = ") ;
-        strcat(msg, expected) ;
-        strcat(msg, ", actual = ") ;
-        strcat(msg, actual) ;
-        strcpy(fail_message, msg) ;
     }
 }
 
