@@ -16,7 +16,3 @@ install: compile
 clean:
 	rm -f *.o
 	rm -f *.a
-	rm -f ~/lib/libheadunit.a
-	rm -f ~/lib/libheadunitcpp.a
-	rm -f ~/include/head-unit.h	
-	rm -f ~/include/head-unit-cpp.h	
