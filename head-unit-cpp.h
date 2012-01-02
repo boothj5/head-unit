@@ -2,6 +2,7 @@
 #define HEAD_UNIT_CPP_H
 
 #include <string>
+#include <sstream>
 
 using namespace std ;
 
@@ -15,7 +16,20 @@ void run_tests(void) ;
 // asserts
 void assert_true(int expression) ;
 void assert_false(int expression) ;
-void assert_int_equals(int expected, int actual) ;
-void assert_string_equals(string expected, string actual) ;
+
+template <class T>
+void assert_equals(T expected, T actual)
+{
+    int fail = 0 ;
+    stringstream msg ;
+
+    fail = expected != actual ;
+    if (fail) {
+        assert_fail = 1 ;
+        msg << "expected = " << expected << ", actual = " << actual ;
+        fail_message = msg.str() ;
+    }
+}
+
 
 #endif
