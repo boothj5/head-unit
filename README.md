@@ -32,7 +32,9 @@ Usage
 
 Include head-unit:
 
-    #include <head-unit.h>
+```c
+#include <head-unit.h>
+```
 
 ### Write some tests
 
