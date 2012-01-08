@@ -171,9 +171,11 @@ Asserts
     assert_equals(T expected, T actual)
 
 T must override:
-    operator==
-    operator!=
+
+* operator==
+* operator!=
 
 and overload the output stream << function:
+
     ostream& operator<<(ostream& strm, const T& obj)
 
