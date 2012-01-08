@@ -30,6 +30,8 @@ Usage
 
 ### Write a test module
 
+some_tests.c:
+
 ```c
 #include <head-unit.h>
 
@@ -57,7 +59,7 @@ void register_some_tests()
 
 ### Create a header and source file to register and run all modules
 
-(e.g. testsuite.h):
+testsuite.h:
 
 ```c
 #ifndef TESTSUITE_H
@@ -69,7 +71,7 @@ void register_some_other_tests(void) ;
 #endif
 ```
 
-(e.g. testsuite.c):
+testsuite.c:
 
 ```c
 #include <head-unit.h>
