@@ -172,10 +172,10 @@ Asserts
 
 T must override:
 
-* operator==
-* operator!=
+    bool T::operator==(const T& other) const
+    bool T::operator!=(const T& other) const
 
-and overload the output stream << function:
+And overload the output stream << function:
 
     ostream& operator<<(ostream& strm, const T& obj)
 
