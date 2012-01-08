@@ -1,16 +1,17 @@
 HEAD-UNIT
----------
+=========
 
 Simple unit testing framework for C/C++ .
 
-Basic steps are:
-    Write the tests
-    Register the tests in a test module
-    Register the test modules in a testsuite
-    Run the testsuite
+Basic steps are:.
 
-Building and installing head-unit:
-----------------------------------
+* Write the tests
+* Register the tests in a test module
+* Register the test modules in a testsuite
+* Run the testsuite
+
+Building and installing head-unit
+---------------------------------
 
 To clean:
 
@@ -27,13 +28,13 @@ To install (currently to ~/lib and ~/include):
 Usage
 -----
 
-1) Create a test module:  
+### Create a test module  
 
 Include head-unit:
 
     #include <head-unit.h>
 
-Write some tests:
+### Write some tests
 
     void test_something(void)
     {
@@ -49,7 +50,7 @@ Write some tests:
         assert_true( ... some expression ... );
     }
 
-At the end of the file, create a function to register this module and its tests:
+### Register the module
 
     void register_some_tests()
     {
@@ -58,7 +59,7 @@ At the end of the file, create a function to register this module and its tests:
         add_test(test_something_else, "test_something_else") ;
     }
 
-2) Create a header and source file to register and run all modules:
+### Create a header and source file to register and run all modules
 
 (e.g. testsuite.h):
 
@@ -83,7 +84,7 @@ At the end of the file, create a function to register this module and its tests:
         return 0 ;
     }
 
-3) Build and run the tests:
+### Build and run the tests
 
 C compiler flags:
 
@@ -96,7 +97,8 @@ C++ compiler flags:
 Example C make targets:
 
     compile-tests: testsuite.o some_tests.o something.o
-        $(CC) -lstdc++ testsuite.o some_tests.o something.o -I ~/include -L ~/lib -o testsuite -l headunit
+        $(CC) -lstdc++ testsuite.o some_tests.o something.o -I ~/include -L
+~/lib -o testsuite -l headunit
 
     test: compile-tests
         ./testsuite
@@ -104,12 +106,14 @@ Example C make targets:
 Example C++ make targets:
 
     compile-tests: testsuite.o some_tests.o something.o
-        $(CC) -Wno-write-strings testsuite.o some_tests.o something.o -I ~/include -L ~/lib -o testsuite -l headunit
+        $(CC) -Wno-write-strings testsuite.o some_tests.o something.o -I
+~/include -L ~/lib -o testsuite -l headunit
 
     test: compile-tests
         ./testsuite
 
-4) Example output
+Example output
+--------------
 
     ---------
     HEAD-UNIT
@@ -150,21 +154,22 @@ Example C++ make targets:
        --> testSevenSpecial... FAILED (expected = true, actual = false)
 
     -> test_player (1/11)
-       --> testAddToHandAddsCard... FAILED (expected = THREE of DIAMONDS, actual = TWO of SPADES)
+       --> testAddToHandAddsCard... FAILED (expected = THREE of DIAMONDS, actual
+= TWO of SPADES)
 
 Asserts
 -------
 
-C/C++ :
+### C/C++
 
-assert_true(int expression)
-assert_false(int expression)
-assert_int_equals(int expected, int actual)
-assert_string_equals(char *expected, char *actual)
+    assert_true(int expression)
+    assert_false(int expression)
+    assert_int_equals(int expected, int actual)
+    assert_string_equals(char *expected, char *actual)
 
-C++ :
+### C++
 
-assert_equals(T expected, T actual)
+    assert_equals(T expected, T actual)
 
 T must override:
     operator==
@@ -172,6 +177,4 @@ T must override:
 
 and overload the output stream << function:
     ostream& operator<<(ostream& strm, const T& obj)
-
-
 
