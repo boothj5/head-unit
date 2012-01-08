@@ -1,7 +1,7 @@
 HEAD-UNIT
 ---------
 
-Simple unit testing framwork for C/C++ .
+Simple unit testing framework for C/C++ .
 
 Basic steps are:
     Write the tests
