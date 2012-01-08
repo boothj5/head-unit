@@ -51,9 +51,9 @@ void test_something_else(void)
 
 void register_some_tests()
 {
-    add_suit("some_tests") ;
-    add_test(test_something, "test_something") ;
-    add_test(test_something_else, "test_something_else") ;
+    TEST_MODULE("some_tests");
+    TEST(test_something);
+    TEST(test_something_else);
 }
 ```
 

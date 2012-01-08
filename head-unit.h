@@ -6,11 +6,13 @@
 #include <cstring>
 #include <sstream>
 #include <iostream>
-
 using namespace std;
 #endif
 
 #define MAX_MSG_LEN 200
+
+#define TEST_MODULE(name) add_suite(name)
+#define TEST(name)        add_test(name, #name) ;
 
 #ifdef __cplusplus
 extern "C" {
