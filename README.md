@@ -28,63 +28,61 @@ To install (currently to ~/lib and ~/include):
 Usage
 -----
 
-### Create a test module  
-
-Include head-unit:
+### Write a test module
 
 ```c
 #include <head-unit.h>
+
+void test_something(void)
+{
+    ... some code ...
+
+    assert_true( ... some expression ... );
+}
+
+void test_something_else(void)
+{
+    ... some code ...
+
+    assert_true( ... some expression ... );
+}
+
+void register_some_tests()
+{
+    add_suit("some_tests") ;
+    add_test(test_something, "test_something") ;
+    add_test(test_something_else, "test_something_else") ;
+}
 ```
-
-### Write some tests
-
-    void test_something(void)
-    {
-        ... some code ...
-
-        assert_true( ... some expression ... );
-    }
-
-    void test_something_else(void)
-    {
-        ... some code ...
-
-        assert_true( ... some expression ... );
-    }
-
-### Register the module
-
-    void register_some_tests()
-    {
-        add_suit("some_tests") ;
-        add_test(test_something, "test_something") ;
-        add_test(test_something_else, "test_something_else") ;
-    }
 
 ### Create a header and source file to register and run all modules
 
 (e.g. testsuite.h):
 
-    #ifndef TESTSUITE_H
-    #define TESTSUITE_H
+```c
+#ifndef TESTSUITE_H
+#define TESTSUITE_H
 
-    void register_some_tests(void) ;
-    void register_some_other_tests(void) ;
+void register_some_tests(void) ;
+void register_some_other_tests(void) ;
 
-    #endif
+#endif
+```
 
 (e.g. testsuite.c):
 
-    #include <head-unit.h>
-    #include <"testsuite.h">
+```c
+#include <head-unit.h>
+#include <"testsuite.h">
 
-    int main(void)
-    {
-        register_some_tests() ;
-        register_some_other_tests() ;
-        run_tests() ;
-        return 0 ;
-    }
+int main(void)
+{
+    register_some_tests() ;
+    register_some_other_tests() ;
+    run_tests() ;
+    return 0 ;
+}
+```
 
 ### Build and run the tests
 
@@ -99,8 +97,7 @@ C++ compiler flags:
 Example C make targets:
 
     compile-tests: testsuite.o some_tests.o something.o
-        $(CC) -lstdc++ testsuite.o some_tests.o something.o -I ~/include -L
-~/lib -o testsuite -l headunit
+        $(CC) -lstdc++ testsuite.o some_tests.o something.o -I ~/include -L ~/lib -o testsuite -l headunit
 
     test: compile-tests
         ./testsuite
@@ -108,8 +105,7 @@ Example C make targets:
 Example C++ make targets:
 
     compile-tests: testsuite.o some_tests.o something.o
-        $(CC) -Wno-write-strings testsuite.o some_tests.o something.o -I
-~/include -L ~/lib -o testsuite -l headunit
+        $(CC) -Wno-write-strings testsuite.o some_tests.o something.o -I ~/include -L ~/lib -o testsuite -l headunit
 
     test: compile-tests
         ./testsuite
@@ -163,21 +159,28 @@ Asserts
 
 ### C/C++
 
-    assert_true(int expression)
-    assert_false(int expression)
-    assert_int_equals(int expected, int actual)
-    assert_string_equals(char *expected, char *actual)
+```c
+assert_true(int expression)
+assert_false(int expression)
+assert_int_equals(int expected, int actual)
+assert_string_equals(char *expected, char *actual)
+```
 
 ### C++
 
-    assert_equals(T expected, T actual)
+```cpp
+assert_equals(T expected, T actual)
+```
 
 T must override:
 
-    bool T::operator==(const T& other) const
-    bool T::operator!=(const T& other) const
+```cpp
+bool T::operator==(const T& other) const
+bool T::operator!=(const T& other) const
+```
 
 And overload the output stream << function:
 
-    ostream& operator<<(ostream& strm, const T& obj)
-
+```cpp
+ostream& operator<<(ostream& strm, const T& obj)
+```
