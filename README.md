@@ -154,8 +154,7 @@ Example output
        --> testSevenSpecial... FAILED (expected = true, actual = false)
 
     -> test_player (1/11)
-       --> testAddToHandAddsCard... FAILED (expected = THREE of DIAMONDS, actual
-= TWO of SPADES)
+       --> testAddToHandAddsCard... FAILED (expected = THREE of DIAMONDS, actual = TWO of SPADES)
 
 Asserts
 -------
