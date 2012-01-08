@@ -1,10 +1,16 @@
-A simple C/C++ Unit testing framework
---------------------------------------
+HEAD-UNIT
+---------
 
-Written whilst implementing shithead in C.
+Simple unit testing framwork for C/C++ .
 
-Instructions for building this project:
----------------------------------------
+Basic steps are:
+    Write the tests
+    Register the tests in a test module
+    Register the test modules in a testsuite
+    Run the testsuite
+
+Building and installing head-unit:
+----------------------------------
 
 To clean:
 
@@ -18,100 +24,154 @@ To install (currently to ~/lib and ~/include):
 
     make install
 
-Instructiona for using head-unit:
----------------------------------
-
-Note: For C++ the only difference is including head-unit-cpp.h and
-the library libheadunitcpp.
+Usage
+-----
 
 1) Create a test module:  
 
-Add the following:
+Include head-unit:
 
     #include <head-unit.h>
 
-Write some tests in it:
+Write some tests:
 
-    void some_test(void)
+    void test_something(void)
     {
         ... some code ...
 
-        assert_true( ... some expression ... ) ;
+        assert_true( ... some expression ... );
     }
 
-    void some_other_test(void)
+    void test_something_else(void)
     {
         ... some code ...
 
-        assert_true( ... some expression ... ) ;
+        assert_true( ... some expression ... );
     }
 
-Create a function to register this module:
+At the end of the file, create a function to register this module and its tests:
 
-    void test_something()
+    void register_some_tests()
     {
-        add_suit("test_something") ;
-        add_test(some_test, "some_test") ;
-        add_test(some_other_test, "some_other_test") ;
+        add_suit("some_tests") ;
+        add_test(test_something, "test_something") ;
+        add_test(test_something_else, "test_something_else") ;
     }
 
-2) Create a file to run all modules:
+2) Create a header and source file to register and run all modules:
+
+(e.g. testsuite.h):
+
+    #ifndef TESTSUITE_H
+    #define TESTSUITE_H
+
+    void register_some_tests(void) ;
+    void register_some_other_tests(void) ;
+
+    #endif
 
 (e.g. testsuite.c):
 
     #include <head-unit.h>
+    #include <"testsuite.h">
 
     int main(void)
     {
-        test_something() ;
-        test_someotherstuff) ;
+        register_some_tests() ;
+        register_some_other_tests() ;
         run_tests() ;
         return 0 ;
     }
 
-3) Builing your tests:
+3) Build and run the tests:
 
-To build your suite, you must build the file with the main() function,
-plus all the test files, plus any files they depend on.  As an example,
-for my player and card tests (using make):
+C compiler flags:
 
-    make-tests: testsuite.o test_card.o test_player.o card.o player.o
-        $(CC) testsuite.o test_card.o test_player.o card.o player.o -I ~/include -L ~/lib -o testsuite -l headunit
+    -lstdc++ -I ~/include -L ~/lib -l headunit
 
-    test: make-tests
+C++ compiler flags:
+
+    -Wno-write-strings -I ~/include -L ~/lib -l headunit
+
+Example C make targets:
+
+    compile-tests: testsuite.o some_tests.o something.o
+        $(CC) -lstdc++ testsuite.o some_tests.o something.o -I ~/include -L ~/lib -o testsuite -l headunit
+
+    test: compile-tests
         ./testsuite
 
-Example output:
+Example C++ make targets:
+
+    compile-tests: testsuite.o some_tests.o something.o
+        $(CC) -Wno-write-strings testsuite.o some_tests.o something.o -I ~/include -L ~/lib -o testsuite -l headunit
+
+    test: compile-tests
+        ./testsuite
+
+4) Example output
 
     ---------
     HEAD-UNIT
     ---------
 
     -> Running tests for suite 'test_card'...
-       --> test_three_lowest_when_last... SUCCESS
-       --> test_three_lowest_when_middle... FAILED
-       --> test_three_lowest_when_first... SUCCESS
-       --> test_lowest_one_card... FAILED
-       --> test_three_lower_than_two... SUCCESS
-       --> test_five_lower_than_two... SUCCESS
-       --> test_jack_lower_than_seven... SUCCESS
-       --> test_two_special... SUCCESS
-       --> test_seven_special... SUCCESS
-       --> test_ten_special... SUCCESS
+       --> testThreeLowerThanTwo... SUCCESS
+       --> testFiveLowerThanTwo... SUCCESS
+       --> testJackLowerThanSeven... SUCCESS
+       --> testTwoSpecial... FAILED
+       --> testSevenSpecial... FAILED
+       --> testTenSpecial... SUCCESS
+       --> testRanksEqual... SUCCESS
+       --> testRanksNotEqual... SUCCESS
+       --> testAllRanksEqual... SUCCESS
+       --> testAllRanksEqual... SUCCESS
 
     -> Running tests for suite 'test_player'...
-       --> test_lowest_card_by_player... FAILED
-       --> swap_first_two_cards... SUCCESS
+       --> testAddToHandAddsCard... FAILED
+       --> testAddAllToHandAddsCards... SUCCESS
+       --> testAddToFaceUpAddsCard... SUCCESS
+       --> testAddToFaceDownAddsCard... SUCCESS
+       --> sortHandSortsHand... SUCCESS
+       --> swapSwapsCards... SUCCESS
+       --> removeFromHandRemovesCard... SUCCESS
+       --> hasCardsWhenCardsInHand... SUCCESS
+       --> hasCardsWhenCardsInFaceUp... SUCCESS
+       --> hasCardsWhenCardsInFaceDown... SUCCESS
+       --> notHasCardsWhenNone... SUCCESS
 
-    9 tests passed
+    18 tests passed
     3 tests failed
 
     FAILURE SUMMARY
     ---------------
     -> test_card (2/10)
-       --> test_three_lowest_when_middle... FAILED
-       --> test_lowest_one_card... FAILED
+       --> testTwoSpecial... FAILED (expected = true, actual = false)
+       --> testSevenSpecial... FAILED (expected = true, actual = false)
 
-    -> test_player (1/2)
-       --> test_lowest_card_by_player... FAILED
+    -> test_player (1/11)
+       --> testAddToHandAddsCard... FAILED (expected = THREE of DIAMONDS, actual = TWO of SPADES)
+
+Asserts
+-------
+
+C/C++ :
+
+assert_true(int expression)
+assert_false(int expression)
+assert_int_equals(int expected, int actual)
+assert_string_equals(char *expected, char *actual)
+
+C++ :
+
+assert_equals(T expected, T actual)
+
+T must override:
+    operator==
+    operator!=
+
+and overload the output stream << function:
+    ostream& operator<<(ostream& strm, const T& obj)
+
+
 
