@@ -35,24 +35,34 @@ some_tests.c:
 ```c
 #include <head-unit.h>
 
-void setup(void)
+static void setup(void)
 {
     ... do some setup for all tests ...
 }
 
-void teardown(void)
+static void teardown(void)
 {
     ... close resources etc ...
 }
 
-void test_something(void)
+static void beforetest(void)
+{
+    ... code to run before each test ...
+}
+
+static void aftertest(void)
+{
+    ... code to run after each test ...
+}
+
+static void test_something(void)
 {
     ... some code ...
 
     assert_true( ... some expression ... );
 }
 
-void test_something_else(void)
+static void test_something_else(void)
 {
     ... some code ...
 
@@ -63,11 +73,18 @@ void register_some_tests()
 {
     TEST_MODULE("some_tests");
     SETUP(setup);
+    BEFORETEST(beforetest);
+    AFTERTEST(aftertest);
     TEST(test_something);
     TEST(test_something_else);
     TEARDOWN(teardown);
 }
 ```
+The use of static is optional but stops tests with similar names in different source files conflicting.
+
+The register function must not be static.
+
+The SETUP, BEFORETEST, AFTERTEST and TEARDOWN functions and equivalent macros are optional.
 
 ### Create a header and source file to register and run all modules
 
