@@ -19,6 +19,7 @@ struct failed_test_t {
 struct suite_t {
     char name[MAX_TEST_NAME_LEN];
     void (*setup)(void);
+    void (*teardown)(void);
     struct test_t tests[MAX_TESTS];
     int num_tests;
     struct failed_test_t failed_tests[MAX_TESTS];
@@ -40,6 +41,7 @@ void add_suite(char *name)
 {
     struct suite_t new_suite;
     new_suite.setup = NULL;
+    new_suite.teardown = NULL;
     new_suite.num_tests = 0;
     new_suite.num_failed = 0;
     strcpy(new_suite.name, name);
@@ -50,6 +52,12 @@ void add_setup(void (*setup)(void))
 {
     struct suite_t *current_suite = &suites[num_suites-1];
     current_suite->setup = setup;
+}
+
+void add_teardown(void (*teardown)(void))
+{
+    struct suite_t *current_suite = &suites[num_suites-1];
+    current_suite->teardown = teardown;
 }
 
 void add_test(void (*test)(void), char *name)
@@ -133,5 +141,8 @@ static void run_suite(struct suite_t *suite)
             printf("SUCCESS\n");
         }
     }
+    
+    if (!(suite->teardown == NULL))
+        (*suite->teardown)();
 }
 
