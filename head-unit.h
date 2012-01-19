@@ -12,6 +12,7 @@ using namespace std;
 #define MAX_MSG_LEN 200
 
 #define TEST_MODULE(name) add_suite(name)
+#define SETUP(name)       add_setup(name)
 #define TEST(name)        add_test(name, #name) ;
 
 #ifdef __cplusplus
@@ -22,6 +23,7 @@ extern int assert_fail;
 extern char fail_message[MAX_MSG_LEN];
 
 void add_suite(char *name);
+void add_setup(void (*setup)(void));
 void add_test(void (*test)(void), char *name);
 void run_tests(void);
 

@@ -35,6 +35,11 @@ some_tests.c:
 ```c
 #include <head-unit.h>
 
+void setup(void)
+{
+    ... do some setup for all tests ...
+}
+
 void test_something(void)
 {
     ... some code ...
@@ -52,6 +57,7 @@ void test_something_else(void)
 void register_some_tests()
 {
     TEST_MODULE("some_tests");
+    SETUP(setup);
     TEST(test_something);
     TEST(test_something_else);
 }
