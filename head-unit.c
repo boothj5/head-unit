@@ -20,6 +20,8 @@ struct suite_t {
     char name[MAX_TEST_NAME_LEN];
     void (*setup)(void);
     void (*teardown)(void);
+    void (*beforetest)(void);
+    void (*aftertest)(void);
     struct test_t tests[MAX_TESTS];
     int num_tests;
     struct failed_test_t failed_tests[MAX_TESTS];
@@ -42,6 +44,8 @@ void add_suite(char *name)
     struct suite_t new_suite;
     new_suite.setup = NULL;
     new_suite.teardown = NULL;
+    new_suite.beforetest = NULL;
+    new_suite.aftertest = NULL;
     new_suite.num_tests = 0;
     new_suite.num_failed = 0;
     strcpy(new_suite.name, name);
@@ -58,6 +62,18 @@ void add_teardown(void (*teardown)(void))
 {
     struct suite_t *current_suite = &suites[num_suites-1];
     current_suite->teardown = teardown;
+}
+
+void add_beforetest(void (*beforetest)(void))
+{
+    struct suite_t *current_suite = &suites[num_suites-1];
+    current_suite->beforetest = beforetest;
+}
+
+void add_aftertest(void (*aftertest)(void))
+{
+    struct suite_t *current_suite = &suites[num_suites-1];
+    current_suite->aftertest = aftertest;
 }
 
 void add_test(void (*test)(void), char *name)
@@ -127,7 +143,15 @@ static void run_suite(struct suite_t *suite)
     for (i = 0; i < suite->num_tests; i++){
         assert_fail = 0;
         printf("   --> %s... ", suite->tests[i].name);
+        
+        if (!(suite->beforetest == NULL))
+            (*suite->beforetest)();
+
         (*suite->tests[i].test)();
+
+        if (!(suite->aftertest == NULL))
+            (*suite->aftertest)();
+
         if (assert_fail) {
             total_failed++;
             printf("FAILED\n");

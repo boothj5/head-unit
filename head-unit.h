@@ -13,6 +13,8 @@ using namespace std;
 
 #define TEST_MODULE(name) add_suite(name)
 #define SETUP(name)       add_setup(name)
+#define BEFORETEST(name)  add_beforetest(name)
+#define AFTERTEST(name)   add_aftertest(name)
 #define TEARDOWN(name)    add_teardown(name)
 #define TEST(name)        add_test(name, #name) ;
 
@@ -25,6 +27,8 @@ extern char fail_message[MAX_MSG_LEN];
 
 void add_suite(char *name);
 void add_setup(void (*setup)(void));
+void add_beforetest(void (*beforetest)(void));
+void add_aftertest(void (*aftertest)(void));
 void add_teardown(void (*teardown)(void));
 void add_test(void (*test)(void), char *name);
 void run_tests(void);
