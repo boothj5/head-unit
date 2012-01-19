@@ -40,6 +40,11 @@ void setup(void)
     ... do some setup for all tests ...
 }
 
+void teardown(void)
+{
+    ... close resources etc ...
+}
+
 void test_something(void)
 {
     ... some code ...
@@ -60,6 +65,7 @@ void register_some_tests()
     SETUP(setup);
     TEST(test_something);
     TEST(test_something_else);
+    TEARDOWN(teardown);
 }
 ```
 

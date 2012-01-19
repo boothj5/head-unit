@@ -13,7 +13,7 @@ using namespace std;
 
 #define TEST_MODULE(name) add_suite(name)
 #define SETUP(name)       add_setup(name)
-#define TEARDOWN(name)    add_TEARDOWN(name)
+#define TEARDOWN(name)    add_teardown(name)
 #define TEST(name)        add_test(name, #name) ;
 
 #ifdef __cplusplus
