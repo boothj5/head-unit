@@ -6,11 +6,13 @@
 #include <cstring>
 #include <sstream>
 #include <iostream>
-using namespace std;
 #endif
 
 #define MAX_MSG_LEN 200
 
+// Core C API  ----------------------------------------------------------------
+
+// Client API for setting up tests
 #define TEST_MODULE(name) add_suite(name)
 #define SETUP(name)       add_setup(name)
 #define BEFORETEST(name)  add_beforetest(name)
@@ -25,6 +27,7 @@ extern "C" {
 extern int assert_fail;
 extern char fail_message[MAX_MSG_LEN];
 
+// test setup functions, clients should use the macros above
 void add_suite(char *name);
 void add_setup(void (*setup)(void));
 void add_beforetest(void (*beforetest)(void));
@@ -33,26 +36,29 @@ void add_teardown(void (*teardown)(void));
 void add_test(void (*test)(void), char *name);
 void run_tests(void);
 
-// asserts
+// C asserts available to clients
 void assert_true(int expression);
 void assert_false(int expression);
 void assert_int_equals(int expected, int actual);
 void assert_string_equals(char *expected, char *actual);
 
-
 #ifdef __cplusplus
 }
 #endif
 
-#ifdef __cplusplus
-void add_suit(string name);
-void add_test(void (*test)(void), string name);
+// C++ API  -------------------------------------------------------------------
 
+// C++ bindings taking std::string instead of const char *
+#ifdef __cplusplus
+void add_suit(std::string name);
+void add_test(void (*test)(void), std::string name);
+
+// C++ asserts
 template <class T>
 void assert_equals(T expected, T actual)
 {
     int fail = 0;
-    stringstream msg;
+    std::stringstream msg;
 
     fail = expected != actual;
     if (fail) {
