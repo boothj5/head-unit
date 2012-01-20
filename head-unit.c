@@ -6,87 +6,151 @@
 #define MAX_TESTS 100
 #define MAX_SUITES 100
 
+// Test structures ------------------------------------------------------------
+
+// a single test function, with name
 struct test_t {
     void (*test)(void);
     char name[MAX_TEST_NAME_LEN];
 };
 
+// pointer to failed test, with message
 struct failed_test_t {
     int index;
     char message[MAX_MSG_LEN];
 };
 
-struct suite_t {
+// represents a single source file containing tests
+struct module_t {
     char name[MAX_TEST_NAME_LEN];
     void (*setup)(void);
     void (*teardown)(void);
     void (*beforetest)(void);
     void (*aftertest)(void);
     struct test_t tests[MAX_TESTS];
-    int num_tests;
     struct failed_test_t failed_tests[MAX_TESTS];
+    int num_tests;
     int num_failed;
 };
 
-static struct suite_t suites[MAX_SUITES]; 
-static int num_suites = 0;
+// Global test data -----------------------------------------------------------
+
+static struct module_t modules[MAX_SUITES]; 
+static int num_modules = 0;
 static int total_passed = 0;
 static int total_failed = 0;
 
 int assert_fail = 0;
 char fail_message[MAX_MSG_LEN];
 
-static void run_suite(struct suite_t *suite);
-static void failure_summary(struct suite_t *suite);
+// Module setup ---------------------------------------------------------------
 
-void add_suite(char *name)
+void add_module(char *name)
 {
-    struct suite_t new_suite;
-    new_suite.setup = NULL;
-    new_suite.teardown = NULL;
-    new_suite.beforetest = NULL;
-    new_suite.aftertest = NULL;
-    new_suite.num_tests = 0;
-    new_suite.num_failed = 0;
-    strcpy(new_suite.name, name);
-    suites[num_suites++] = new_suite;
+    struct module_t new_module;
+    new_module.setup = NULL;
+    new_module.teardown = NULL;
+    new_module.beforetest = NULL;
+    new_module.aftertest = NULL;
+    new_module.num_tests = 0;
+    new_module.num_failed = 0;
+    strcpy(new_module.name, name);
+    modules[num_modules++] = new_module;
 }
 
 void add_setup(void (*setup)(void))
 {
-    struct suite_t *current_suite = &suites[num_suites-1];
-    current_suite->setup = setup;
+    struct module_t *current_module = &modules[num_modules-1];
+    current_module->setup = setup;
 }
 
 void add_teardown(void (*teardown)(void))
 {
-    struct suite_t *current_suite = &suites[num_suites-1];
-    current_suite->teardown = teardown;
+    struct module_t *current_module = &modules[num_modules-1];
+    current_module->teardown = teardown;
 }
 
 void add_beforetest(void (*beforetest)(void))
 {
-    struct suite_t *current_suite = &suites[num_suites-1];
-    current_suite->beforetest = beforetest;
+    struct module_t *current_module = &modules[num_modules-1];
+    current_module->beforetest = beforetest;
 }
 
 void add_aftertest(void (*aftertest)(void))
 {
-    struct suite_t *current_suite = &suites[num_suites-1];
-    current_suite->aftertest = aftertest;
+    struct module_t *current_module = &modules[num_modules-1];
+    current_module->aftertest = aftertest;
 }
 
 void add_test(void (*test)(void), char *name)
 {
     struct test_t new_test;
-    struct suite_t *current_suite = &suites[num_suites-1];
+    struct module_t *current_module = &modules[num_modules-1];
 
     new_test.test = test;
     strcpy(new_test.name, name);
-    current_suite->tests[current_suite->num_tests++] = new_test;
+    current_module->tests[current_module->num_tests++] = new_test;
 }
 
-void run_tests()
+// Used by testuite runner ----------------------------------------------------
+
+static void run_module(struct module_t *module)
+{
+    int i;
+    printf("-> Running tests for suite '%s'...\n", module->name);
+
+    if (!(module->setup == NULL))
+        (*module->setup)();
+
+    for (i = 0; i < module->num_tests; i++){
+        assert_fail = 0;
+        printf("   --> %s... ", module->tests[i].name);
+        
+        if (!(module->beforetest == NULL))
+            (*module->beforetest)();
+
+        (*module->tests[i].test)();
+
+        if (!(module->aftertest == NULL))
+            (*module->aftertest)();
+
+        if (assert_fail) {
+            total_failed++;
+            printf("FAILED\n");
+            struct failed_test_t failed;
+            failed.index = i;
+            strcpy(failed.message, fail_message);
+            module->failed_tests[module->num_failed++] = failed;
+        }
+        else {
+            total_passed++;
+            printf("SUCCESS\n");
+        }
+    }
+    
+    if (!(module->teardown == NULL))
+        (*module->teardown)();
+}
+
+static void failure_summary(struct module_t *module)
+{
+    int i;
+    printf("-> %s (%d/%d)\n", module->name, module->num_failed, 
+        module->num_tests);
+    
+    for (i = 0 ; i < module->num_failed ; i++) {
+        int test_num = module->failed_tests[i].index;
+        char *msg = module->failed_tests[i].message;
+        printf("   --> %s... FAILED (%s)\n", 
+            module->tests[test_num].name, msg);
+        if (i == module->num_failed -1)
+            printf("\n");
+    }
+}
+
+// Testsuite runner -----------------------------------------------------------
+
+void run_suite()
 {
     int i;
     
@@ -94,9 +158,9 @@ void run_tests()
     printf("HEAD-UNIT\n");
     printf("---------\n\n");
 
-    for (i = 0; i < num_suites; i++) {
-        run_suite(&suites[i]);
-        if (i != num_suites-1)
+    for (i = 0; i < num_modules; i++) {
+        run_module(&modules[i]);
+        if (i != num_modules-1)
             printf("\n");
     }
     
@@ -109,64 +173,11 @@ void run_tests()
         printf("FAILURE SUMMARY\n");
         printf("---------------\n");
 
-        for (i = 0; i < num_suites; i++) 
-            if (suites[i].num_failed)
-                failure_summary(&suites[i]);
+        for (i = 0; i < num_modules; i++) 
+            if (modules[i].num_failed)
+                failure_summary(&modules[i]);
     }
     else {
         printf("SUCCESS\n\n");
     }
 }
-
-static void failure_summary(struct suite_t *suite)
-{
-    int i;
-    printf("-> %s (%d/%d)\n", suite->name, suite->num_failed, suite->num_tests);
-    
-    for (i = 0 ; i < suite->num_failed ; i++) {
-        int test_num = suite->failed_tests[i].index;
-        char *msg = suite->failed_tests[i].message;
-        printf("   --> %s... FAILED (%s)\n", suite->tests[test_num].name, msg);
-        if (i == suite->num_failed -1)
-            printf("\n");
-    }
-}
-
-static void run_suite(struct suite_t *suite)
-{
-    int i;
-    printf("-> Running tests for suite '%s'...\n", suite->name);
-
-    if (!(suite->setup == NULL))
-        (*suite->setup)();
-
-    for (i = 0; i < suite->num_tests; i++){
-        assert_fail = 0;
-        printf("   --> %s... ", suite->tests[i].name);
-        
-        if (!(suite->beforetest == NULL))
-            (*suite->beforetest)();
-
-        (*suite->tests[i].test)();
-
-        if (!(suite->aftertest == NULL))
-            (*suite->aftertest)();
-
-        if (assert_fail) {
-            total_failed++;
-            printf("FAILED\n");
-            struct failed_test_t failed;
-            failed.index = i;
-            strcpy(failed.message, fail_message);
-            suite->failed_tests[suite->num_failed++] = failed;
-        }
-        else {
-            total_passed++;
-            printf("SUCCESS\n");
-        }
-    }
-    
-    if (!(suite->teardown == NULL))
-        (*suite->teardown)();
-}
-

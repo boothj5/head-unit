@@ -3,10 +3,10 @@
 
 using namespace std ;
 
-void add_suite(string name)
+void add_module(string name)
 {
     const char *cname = name.c_str();
-    add_suit(cname);
+    add_module(cname);
 }
 
 void add_test(void (*test)(void), string name)

@@ -86,7 +86,7 @@ The register function must not be static.
 
 The SETUP, BEFORETEST, AFTERTEST and TEARDOWN functions and equivalent macros are optional.
 
-### Create a header and source file to register and run all modules
+### Create the testsuite header and source file
 
 testsuite.h:
 
@@ -110,7 +110,7 @@ int main(void)
 {
     register_some_tests() ;
     register_some_other_tests() ;
-    run_tests() ;
+    run_suite() ;
     return 0 ;
 }
 ```

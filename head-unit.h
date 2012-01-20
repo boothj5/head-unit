@@ -13,7 +13,7 @@
 // Core C API  ----------------------------------------------------------------
 
 // Client API for setting up tests
-#define TEST_MODULE(name) add_suite(name)
+#define TEST_MODULE(name) add_module(name)
 #define SETUP(name)       add_setup(name)
 #define BEFORETEST(name)  add_beforetest(name)
 #define AFTERTEST(name)   add_aftertest(name)
@@ -28,13 +28,13 @@ extern int assert_fail;
 extern char fail_message[MAX_MSG_LEN];
 
 // test setup functions, clients should use the macros above
-void add_suite(char *name);
+void add_module(char *name);
 void add_setup(void (*setup)(void));
 void add_beforetest(void (*beforetest)(void));
 void add_aftertest(void (*aftertest)(void));
 void add_teardown(void (*teardown)(void));
 void add_test(void (*test)(void), char *name);
-void run_tests(void);
+void run_suite(void);
 
 // C asserts available to clients
 void assert_true(int expression);
@@ -50,7 +50,7 @@ void assert_string_equals(char *expected, char *actual);
 
 // C++ bindings taking std::string instead of const char *
 #ifdef __cplusplus
-void add_suit(std::string name);
+void add_module(std::string name);
 void add_test(void (*test)(void), std::string name);
 
 // C++ asserts
