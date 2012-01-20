@@ -9,3 +9,4 @@ libheadunit.a
 .cproject
 .project
 .settings/
+*.swp

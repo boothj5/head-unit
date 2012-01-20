@@ -1,7 +1,7 @@
-CC=g++
-CXX=g++
-CFLAGS=-Werror -Wall -Wextra
-CXXFLAGS=-Werror -Wall -Wextra
+CC = g++
+CXX = g++
+CFLAGS = -O3 -Werror -Wall -Wextra
+CXXFLAGS = -O3 -Werror -Wall -Wextra
 
 compile: head-unit.o asserts.o head-unit-cpp.o
 	ar rcs libheadunit.a head-unit.o asserts.o head-unit-cpp.o
