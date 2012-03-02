@@ -63,6 +63,7 @@ void assert_true(int expression);
 void assert_false(int expression);
 void assert_int_equals(int expected, int actual);
 void assert_string_equals(char *expected, char *actual);
+void assert_is_null(void *ptr);
 
 #ifdef __cplusplus
 }

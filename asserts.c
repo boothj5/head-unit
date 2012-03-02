@@ -80,3 +80,14 @@ void assert_string_equals(char *expected, char *actual)
         strcpy(fail_message, msg) ;
     }
 }
+
+void assert_is_null(void *ptr)
+{
+    int fail = 0;
+    
+    fail = (ptr != NULL);
+    if (fail) {
+        assert_fail = 1;
+        strcpy(fail_message, "Expected NULL, but pointer has value");
+    }   
+}
