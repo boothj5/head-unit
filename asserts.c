@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include "head-unit.h"
 
-void assert_true(int expression)
+void assert_true(const int expression)
 {
     int fail = 0 ;
 
@@ -35,7 +35,7 @@ void assert_true(int expression)
     }
 }
 
-void assert_false(int expression)
+void assert_false(const int expression)
 {
     int fail = 0 ;
 
@@ -46,7 +46,7 @@ void assert_false(int expression)
     }
 }
 
-void assert_int_equals(int expected, int actual)
+void assert_int_equals(const int expected, const int actual)
 {
     int fail = 0 ;
     char msg[MAX_MSG_LEN] ;
@@ -65,7 +65,7 @@ void assert_int_equals(int expected, int actual)
     }
 }
 
-void assert_string_equals(char *expected, char *actual)
+void assert_string_equals(const char * const expected, const char * const actual)
 {
     int fail = 0 ;
     char msg[MAX_MSG_LEN] ;
@@ -81,7 +81,7 @@ void assert_string_equals(char *expected, char *actual)
     }
 }
 
-void assert_is_null(void *ptr)
+void assert_is_null(const void * const ptr)
 {
     int fail = 0;
     

@@ -59,11 +59,11 @@ void add_test(void (*test)(void), char *name);
 void run_suite(void);
 
 // C asserts available to clients
-void assert_true(int expression);
-void assert_false(int expression);
-void assert_int_equals(int expected, int actual);
-void assert_string_equals(char *expected, char *actual);
-void assert_is_null(void *ptr);
+void assert_true(const int expression);
+void assert_false(const int expression);
+void assert_int_equals(const int expected, const int actual);
+void assert_string_equals(const char * const expected, const char * const actual);
+void assert_is_null(const void * const ptr);
 
 #ifdef __cplusplus
 }
