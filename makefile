@@ -1,4 +1,4 @@
-CC = g++
+CC = gcc
 CXX = g++
 CFLAGS = -O3 -Werror -Wall -Wextra
 CXXFLAGS = -O3 -Werror -Wall -Wextra
