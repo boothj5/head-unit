@@ -1,0 +1,7 @@
+Package: libheadunit-dev
+Version: 0.11-1
+Section: base
+Priority: optional
+Architecture: amd64
+Maintainer: James Booth <boothj5@gmail.com>
+Description: Simple unit testing framework for C.

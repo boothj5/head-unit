@@ -25,6 +25,13 @@ To install (currently to ~/lib and ~/include):
 
     make install
 
+Debain binary package
+---------------------
+
+The latest stable version can be found as a .deb binary package.  To install:
+
+	sudo dpkg -i ./libheadunit_0.11-1_amd64.deb
+
 Usage
 -----
 
