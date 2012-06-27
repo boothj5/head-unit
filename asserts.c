@@ -81,6 +81,25 @@ void assert_string_equals(const char * const expected, const char * const actual
     }
 }
 
+void assert_signed_char_equals(const signed char expected, const signed char actual)
+{
+    int fail = 0 ;
+    char msg[MAX_MSG_LEN] ;
+    char buf[10] ;
+
+    fail = expected != actual ;
+    if (fail) {
+        assert_fail = 1 ;
+        strcpy(msg, "expected = ") ;
+        sprintf(buf, "%d", expected) ;
+        strcat(msg, buf) ;
+        strcat(msg, ", actual = ") ;
+        sprintf(buf, "%d", actual) ;
+        strcat(msg, buf) ;
+        strcpy(fail_message, msg) ;
+    }
+}
+
 void assert_is_null(const void * const ptr)
 {
     int fail = 0;

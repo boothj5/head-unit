@@ -62,6 +62,7 @@ void run_suite(void);
 void assert_true(const int expression);
 void assert_false(const int expression);
 void assert_int_equals(const int expected, const int actual);
+void assert_signed_char_equals(const signed char expected, const signed char actual);
 void assert_string_equals(const char * const expected, const char * const actual);
 void assert_is_null(const void * const ptr);
 
