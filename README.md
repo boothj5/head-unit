@@ -21,9 +21,9 @@ To build:
 
     make
 
-To install (currently to ~/lib and ~/include):
+To install (as root):
 
-    make install
+    install.sh
 
 Debain binary package
 ---------------------
