@@ -21,9 +21,9 @@ To build:
 
     make
 
-To install (as root):
+To install (as root, or sudo):
 
-    install.sh
+    make install
 
 Debain binary package
 ---------------------
