@@ -30,7 +30,7 @@
 #include <iostream>
 #endif
 
-#define MAX_MSG_LEN 200
+#define MAX_MSG_LEN 1000
 
 // Core C API  ----------------------------------------------------------------
 

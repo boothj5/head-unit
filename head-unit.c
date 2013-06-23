@@ -24,7 +24,7 @@
 #include <string.h>
 #include "head-unit.h"
 
-#define MAX_TEST_NAME_LEN 50
+#define MAX_TEST_NAME_LEN 100
 #define MAX_TESTS 100
 #define MAX_SUITES 100
 
